@@ -54,6 +54,9 @@ class Board {
       }
     }
 
+    [[nodiscard]] Tile getTile(const int row, const int col) const {
+      return gameBoard[row][col];
+    }
 
   private:
     Tile gameBoard[4][4];
