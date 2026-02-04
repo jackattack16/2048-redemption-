@@ -64,6 +64,8 @@ class Tile {
       {1024, sf::Color(0xed, 0xc5, 0x3f)},   // #edc53f
       {2048, sf::Color(0xed, 0xc2, 0x2e)}    // #edc22e
     };
+
+
 };
 
 #endif 

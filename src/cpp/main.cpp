@@ -5,10 +5,11 @@
 #include "../headers/render.h"
 
 int main() {
-  sf::ContextSettings settings;
+  const sf::ContextSettings settings;
   sf::Clock clock;
 
   sf::RenderWindow window(sf::VideoMode({512, 512}), "My first window", sf::State::Windowed, settings);
+  window.setFramerateLimit(60);
   window.setVerticalSyncEnabled(true); 	
   window.setFramerateLimit(60);
   Game my_game{};
@@ -25,10 +26,7 @@ int main() {
     }
 
     my_game.pullInputs();
-    my_game.updateLogic();
-    renderGame(my_game.getBoard(), window, my_game.getFont());
-
-    window.display();
+    renderGame(my_game.theBoard, window, my_game.getFont());
   }
   return 1;
 }

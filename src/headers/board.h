@@ -7,6 +7,8 @@
 #define BOARD_H
 
 class Board {
+
+
   public:
     static void moveTiles(int direction) {
 
@@ -20,6 +22,18 @@ class Board {
         }
       }
       this->generateStartingBoard();
+    }
+
+    bool isPreformingAction{};
+    int movementDirection{}; // 0 - left, 1 - right, 2 - up, 3 - down, 4 - none
+    bool isAnimating{};
+    int animationFrame = 0;
+
+    void endAnimation() {
+      this->isAnimating = false;
+      this->movementDirection = 4;
+      this->animationFrame = 0;
+      this->isPreformingAction = false;
     }
 
     void generateStartingBoard() { // Generates 2 tiles in random locations with 2/3 chance to be 2 and 1/3 to be 4
@@ -57,6 +71,8 @@ class Board {
     [[nodiscard]] Tile getTile(const int row, const int col) const {
       return gameBoard[row][col];
     }
+
+    float moveAmounts[10] = {-18.0f, -14.0f, -10.0f, -6.0f, -3.0f, -1.5f, 1.0f, 0.6f, 0.3f, 0.1f};
 
   private:
     Tile gameBoard[4][4];
