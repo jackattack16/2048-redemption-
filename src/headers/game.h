@@ -23,6 +23,7 @@ public:
       std::cout << "left" << std::endl;
       this->theBoard.isPreformingAction = true;
       this->theBoard.movementDirection = 0;
+      this->theBoard.moveTilesLeft();
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) && !this->theBoard.isPreformingAction) {
       std::cout << "right" << std::endl;

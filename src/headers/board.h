@@ -3,6 +3,7 @@
 
 #include <random>
 #include <vector>
+#include <algorithm>
 #include "tile.h"
 #ifndef BOARD_H
 #define BOARD_H
@@ -51,9 +52,6 @@ public:
     gameBoard[0][1].createTile(2);
     gameBoard[0][2].createTile(2);
     gameBoard[0][3].createTile(4);
-    gameBoard[1][0].createTile(2);
-    gameBoard[1][2].createTile(2);
-    gameBoard[1][3].createTile(4);
   }
 
 
@@ -80,48 +78,90 @@ public:
 
 
   void moveTilesRight() {
-    int rowIncrementer = 0;
-
     // Merge tiles first
-    for ( const auto row: gameBoard ) {
-
+    for ( int row = 0; row < 4; row++ ) {
       std::vector<Tile> numbersInRow; // Create a vector to store the tiles that are not zero
       for ( int col = 0; col < 4; col++ ) { // Loop through each column left to right
-        if ( row[col].isNumber() ) { // Check if the tile has a value
-          numbersInRow.push_back(row[col]); // Add that tile to a vector of pointers to the tiles
+        if ( gameBoard[row][col].isNumber() ) { // Check if the tile has a value
+          numbersInRow.push_back(gameBoard[row][col]); // Add that tile to a vector of pointers to the tiles
         }
-        gameBoard[rowIncrementer][col].reset(); // Set the tile to zero
+        gameBoard[row][col].reset(); // Set the tile to zero
       }
 
       // Merge tiles in the numbersInRow vector
       std::vector<Tile> mergedNumbers;
-      for ( int col = 0; col < numbersInRow.size(); col++ ) {// Loop through the vector
-        try { // To protect from out of bounds checks at the end of vectors and arrays
-          if ( numbersInRow.at(col).getValue() == numbersInRow.at(col + 1).getValue()) { // Check if the tile to the right is the same number
-            Tile tempTile; // Create a temporary tile to push to the vector
-            tempTile.setValue(numbersInRow.at(col).getValue() + numbersInRow.at(col+ 1).getValue()); // Calculate the new value
-            mergedNumbers.push_back(tempTile);
-            col++; // Skip the next tile
-          } else {
-            mergedNumbers.push_back(numbersInRow.at(col)); // Add in the tile if it does not merge
-          }
-        } catch (std::out_of_range &e) {
-          std::cout << "end of row reached" << std::endl;
-          mergedNumbers.push_back(numbersInRow.at(col)); // Add in the tile at the end of the row
+      for ( int col = 0; col < numbersInRow.size(); col++ ) {
+        // Loop through the vector
+        if ( col + 1 < numbersInRow.size() && numbersInRow.at(col).getValue() == numbersInRow.at(col + 1).getValue()) { // Check if the tile to the right is the same number
+          Tile tempTile; // Create a temporary tile to push to the vector
+          tempTile.setValue(numbersInRow.at(col).getValue() + numbersInRow.at(col + 1).getValue()); // Calculate the new value
+          mergedNumbers.push_back(tempTile);
+          col++; // Skip the next tile
+        } else {
+          mergedNumbers.push_back(numbersInRow.at(col)); // Add in the tile if it does not merge
         }
       }
 
-      int startingCol = 4 - mergedNumbers.size(); // The starting column to put the value back in to the array
-      for (const auto& tile : mergedNumbers) { // Loop through all the numbers that are going to be put into the final board
-        gameBoard[rowIncrementer][startingCol] = tile; // Set the value of the tile in the actual board
+
+      std::size_t startingCol = 4 - mergedNumbers.size(); // The starting column to put the value back in to the array
+      for ( const auto &tile: mergedNumbers ) { // Loop through all the numbers that are going to be put into the final board
+        gameBoard[row][startingCol] = tile; // Set the value of the tile in the actual board
         startingCol++; // Change the column index
       }
-      rowIncrementer++;
+    }
+  }
+
+  void moveTilesLeft() {
+    // Merge tiles first
+    for ( int row = 0; row < 4; row++ ) {
+
+      if (!rowHasNumbers(row)) { // Check to see if the row is empty
+        std::cout << row << std::endl;
+        continue;
+      }
+
+      std::vector<Tile> numbersInRow; // Create a vector to store the tiles that are not zero
+      for ( int col = 4; col > 0; col-- ) { // Loop through each column right to left
+        if ( gameBoard[row][col - 1].isNumber() ) { // Check if the tile has a value
+          numbersInRow.push_back(gameBoard[row][col - 1]); // Add that tile to a vector of pointers to the tiles
+        }
+        gameBoard[row][col - 1].reset(); // Set the tile to zero
+      }
+
+      // Merge tiles in the numbersInRow vector
+      std::vector<Tile> mergedNumbers;
+      const std::size_t sizeCol = numbersInRow.size() - 1;
+      for ( int col = static_cast<int>(sizeCol); col >= 0; col-- ) {
+        // Loop through the vector
+        if ( static_cast<int>(col) - 1 > -1 && numbersInRow.at(col).getValue() == numbersInRow.at(col - 1).getValue()) { // Check if the tile to the left is the same number
+          Tile tempTile; // Create a temporary tile to push to the vector
+          tempTile.setValue(numbersInRow.at(col).getValue() * 2); // Calculate the new value
+          mergedNumbers.push_back(tempTile);
+          col--; // Skip the next tile
+        } else {
+          mergedNumbers.push_back(numbersInRow.at(col)); // Add in the tile if it does not merge
+        }
+      }
+
+      // std::ranges::reverse(mergedNumbers);
+      int startingCol = 0; // The starting column to put the value back in to the array
+      for ( const auto &tile: mergedNumbers ) { // Loop through all the numbers that are going to be put into the final board
+        gameBoard[row][startingCol] = tile; // Set the value of the tile in the actual board
+        startingCol++; // Change the column index
+      }
     }
   }
 
 private:
   Tile gameBoard[4][4];
+
+  bool rowHasNumbers(const int row) {
+    int sum = 0;
+    for (const auto& tile : gameBoard[row]) {
+      sum += tile.getValue();
+    }
+    return sum > 0;
+  }
 };
 
 #endif
