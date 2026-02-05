@@ -18,6 +18,10 @@ class Tile {
       this->value = number;
     }
 
+    int getValue() const {
+      return this->value;
+    }
+
     sf::Color getColor() const {
       return this->tileBackgrounds.at(this->value);
     }

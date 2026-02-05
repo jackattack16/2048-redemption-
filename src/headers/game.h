@@ -28,6 +28,7 @@ public:
       std::cout << "right" << std::endl;
       this->theBoard.isPreformingAction = true;
       this->theBoard.movementDirection = 1;
+      this->theBoard.moveTilesRight();
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) && !this->theBoard.isPreformingAction) {
       std::cout << "up" << std::endl;

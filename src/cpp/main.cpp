@@ -5,7 +5,7 @@
 #include "../headers/render.h"
 
 int main() {
-  const sf::ContextSettings settings;
+  constexpr sf::ContextSettings settings;
   sf::Clock clock;
 
   sf::RenderWindow window(sf::VideoMode({512, 512}), "My first window", sf::State::Windowed, settings);
@@ -14,6 +14,8 @@ int main() {
   window.setFramerateLimit(60);
   Game my_game{};
   my_game.start();
+
+
   while (window.isOpen()) 
   {
     window.clear();

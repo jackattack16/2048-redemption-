@@ -51,6 +51,7 @@ inline void renderGame(Board &inputBoard, sf::RenderWindow &window, const sf::Fo
   window.setView(mainView);
   createBackground(window, radius, sidePadding, windowSize, gameSize);
 
+  // Move the tiles if a input direction is pressed
   if (inputBoard.isPreformingAction) {
     if (inputBoard.animationFrame == 11) {
       inputBoard.endAnimation();
