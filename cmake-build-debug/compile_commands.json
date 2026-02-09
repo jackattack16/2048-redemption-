@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/jackson-diekmann/CLionProjects/untitled/cmake-build-debug",
+  "command": "/usr/bin/c++ -DSFML_STATIC -g -std=gnu++20 -fdiagnostics-color=always -o CMakeFiles/untitled.dir/src/cpp/main.cpp.o -c /home/jackson-diekmann/CLionProjects/untitled/src/cpp/main.cpp",
+  "file": "/home/jackson-diekmann/CLionProjects/untitled/src/cpp/main.cpp",
+  "output": "/home/jackson-diekmann/CLionProjects/untitled/cmake-build-debug/CMakeFiles/untitled.dir/src/cpp/main.cpp.o"
+}
+]

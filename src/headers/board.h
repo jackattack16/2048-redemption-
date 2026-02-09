@@ -77,6 +77,53 @@ public:
   float moveAmounts[10] = {-18.0f, -14.0f, -10.0f, -6.0f, -3.0f, -1.5f, 1.0f, 0.6f, 0.3f, 0.1f};
 
 
+
+  static std::array<Tile, 4> mergeTiles(Tile inputRow[4]) {
+    std::vector<Tile> numbersFromRow; // Stores all the non-zero tiles from the inputRow
+    for (int x = 0; x < 4; x++) {
+      if (inputRow[x].isNumber()) { // Check if the tile is a number, then adds it to the vector
+        numbersFromRow.push_back(inputRow[x]);
+      }
+    }
+
+    std::vector<Tile> mergedNumbers; // Stores the results of the merges
+    for ( int col = 0; col < numbersFromRow.size(); col++ ) {
+      // Loop through the vector
+      if ( col + 1 < numbersFromRow.size() && numbersFromRow.at(col).getValue() == numbersFromRow.at(col + 1).getValue()) { // Check if the tile to the right is the same number
+        Tile tempTile; // Create a temporary tile to push to the vector
+        tempTile.setValue(numbersFromRow.at(col).getValue() + numbersFromRow.at(col + 1).getValue()); // Calculate the new value
+        mergedNumbers.push_back(tempTile);
+        col++; // Skip the next tile
+      } else {
+        mergedNumbers.push_back(numbersFromRow.at(col)); // Add in the tile if it does not merge
+      }
+    }
+
+    const std::size_t startingCol = 4 - mergedNumbers.size(); // The starting column to put the value back in to the array
+    std::array<Tile, 4> returnedRow; // The final array that has all fo the zeros and merged numbers back in
+    int mergedNumbersIndex = 0;
+    for (int y = 0; y < 4; y++) {
+      if (y >= startingCol) { // Check if the index in the array is larger than the number of values after merge
+        returnedRow[y].setValue(mergedNumbers[mergedNumbersIndex].getValue()); // Set that tile to the correct value
+        mergedNumbersIndex++;
+      }
+    }
+
+    for (const Tile& tile : returnedRow) {
+      std::cout << tile << std::endl;
+    }
+
+    return returnedRow;
+  }
+
+  void testMerge() {
+    std::array<Tile, 4> mergedArray = mergeTiles(gameBoard[0]);
+
+    for (int i = 0; i < 4; i++) {
+      gameBoard[0][i].setValue(mergedArray[i].getValue());
+    }
+  }
+
   void moveTilesRight() {
     // Merge tiles first
     for ( int row = 0; row < 4; row++ ) {
