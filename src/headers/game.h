@@ -23,23 +23,25 @@ public:
       std::cout << "left" << std::endl;
       this->theBoard.isPreformingAction = true;
       this->theBoard.movementDirection = 0;
-      this->theBoard.moveTilesLeft();
+      this->theBoard.merge('l');
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) && !this->theBoard.isPreformingAction) {
       std::cout << "right" << std::endl;
       this->theBoard.isPreformingAction = true;
       this->theBoard.movementDirection = 1;
-      this->theBoard.testMerge();
+      this->theBoard.merge('r');
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) && !this->theBoard.isPreformingAction) {
       std::cout << "up" << std::endl;
       this->theBoard.isPreformingAction = true;
       this->theBoard.movementDirection = 2;
+      this->theBoard.merge('u');
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down) && !this->theBoard.isPreformingAction) {
       std::cout << "down" << std::endl;
       this->theBoard.isPreformingAction = true;
-      this->theBoard.movementDirection = 3;
+      this->theBoard.movementDirection = 0;
+      this->theBoard.merge('d');
     }
   }
 
@@ -49,8 +51,6 @@ public:
 
   Board theBoard;
   sf::Font font;
-
-private:
 
 };
 

@@ -53,7 +53,7 @@ inline void renderGame(Board &inputBoard, sf::RenderWindow &window, const sf::Fo
 
   // Move the tiles if a input direction is pressed
   if (inputBoard.isPreformingAction) {
-    if (inputBoard.animationFrame == 11) {
+    if (inputBoard.animationFrame == 15) {
       inputBoard.endAnimation();
       return;
     }
@@ -85,7 +85,9 @@ inline void renderGame(Board &inputBoard, sf::RenderWindow &window, const sf::Fo
   for ( int row = 0; row < 4; row++ ) {
     for ( int col = 0; col < 4; col++ ) {
       drawTile(window, radius, sidePadding, tileSize, tileGutterSize, row, col, inputBoard);
-      drawTileNumber(inputBoard, window, font, sidePadding, tileSize, tileGutterSize, row, col);
+      if (inputBoard.getTile(row, col).isNumber()) {
+        drawTileNumber(inputBoard, window, font, sidePadding, tileSize, tileGutterSize, row, col);
+      }
     }
   }
 
