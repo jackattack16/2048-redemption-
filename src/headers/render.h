@@ -36,7 +36,7 @@ inline void renderGame(Board &inputBoard, sf::RenderWindow &window, const sf::Fo
   constexpr float boardPrecentSize = 0.9f;
   constexpr float radius = 5.0f;
   constexpr float boardPadding = (1.0f - boardPrecentSize) / 2.0f;
-  sf::View mainView = window.getDefaultView();
+  const sf::View mainView = window.getDefaultView();
   const sf::Vector2u windowSize = window.getSize();
   const sf::Vector2f gameSize = {static_cast<float>(windowSize.x * boardPrecentSize), static_cast<float>(windowSize.y * boardPrecentSize)};
   const sf::Vector2f sidePadding = {boardPadding * windowSize.x, boardPadding * windowSize.y};
@@ -53,24 +53,24 @@ inline void renderGame(Board &inputBoard, sf::RenderWindow &window, const sf::Fo
 
   // Move the tiles if a input direction is pressed
   if (inputBoard.isPreformingAction) {
-    if (inputBoard.animationFrame == 15) {
+    if (inputBoard.animationFrame == 14) {
       inputBoard.endAnimation();
-      return;
-    }
-    switch (inputBoard.movementDirection) { // Move the board in the direction of the press to add emphasis
-      case 0: // Left
-        tileRender.move({ inputBoard.moveAmounts[inputBoard.animationFrame] * -1.f ,0.f});
-        break;
-      case 1: // Right
-        tileRender.move({ inputBoard.moveAmounts[inputBoard.animationFrame],0.f});
-        break;
-      case 2: // Up
-        tileRender.move({ 0.f,inputBoard.moveAmounts[inputBoard.animationFrame] * -1.f});
-        break;
-      case 3: // Down
-        tileRender.move({ 0.f,inputBoard.moveAmounts[inputBoard.animationFrame]});
-        break;
-      default:;
+    } else {
+      switch (inputBoard.movementDirection) { // Move the board in the direction of the press to add emphasis
+        case 0: // Left
+          tileRender.move({ inputBoard.moveAmounts[inputBoard.animationFrame] * -1.f ,0.f});
+          break;
+        case 1: // Right
+          tileRender.move({ inputBoard.moveAmounts[inputBoard.animationFrame],0.f});
+          break;
+        case 2: // Up
+          tileRender.move({ 0.f,inputBoard.moveAmounts[inputBoard.animationFrame] * -1.f});
+          break;
+        case 3: // Down
+          tileRender.move({ 0.f,inputBoard.moveAmounts[inputBoard.animationFrame]});
+          break;
+        default:;
+      }
     }
 
     inputBoard.animationFrame++;
@@ -90,6 +90,4 @@ inline void renderGame(Board &inputBoard, sf::RenderWindow &window, const sf::Fo
       }
     }
   }
-
-  window.display();
 }

@@ -12,7 +12,6 @@ class Board {
 
 
 public:
-
   void resetBoard() {
     // Reset all the tiles back to zero
     for ( auto &row: gameBoard ) {
@@ -26,12 +25,17 @@ public:
   bool isPreformingAction{};
   bool isAnimating{};
   int animationFrame = 0;
-  int movementDirection;
+  int movementDirection{};
 
   void endAnimation() {
     this->isAnimating = false;
     this->animationFrame = 0;
     this->isPreformingAction = false;
+  }
+
+  void setUpGameBoard() {
+    this->createOpenSpacesVector();
+    generateStartingBoard();
   }
 
   void generateStartingBoard() { // Generates 2 tiles in random locations with 2/3 chance to be 2 and 1/3 to be 4
@@ -47,13 +51,34 @@ public:
   }
 
 
-  std::pair<int, int> generateRandomLocation() const { // Generates a unique location
-    std::pair<int, int> location = {Board::generateRandomNumber(0, 3), Board::generateRandomNumber(0, 3)};
-    while ( gameBoard[location.first][location.second].isNumber() ) {
-      location = {Board::generateRandomNumber(0, 3), Board::generateRandomNumber(0, 3)};
+  // Thanks Claude!
+  std::pair<int, int> generateRandomLocation() {
+    if (openSpaces.empty()) {
+      throw std::runtime_error("No open spaces available!");
     }
+
+    int index = generateRandomNumber(0, openSpaces.size() - 1);
+    std::pair<int, int> location = openSpaces[index];
+
+    // Swap with last element, then pop - O(1) instead of O(n)
+    openSpaces[index] = openSpaces.back();
+    openSpaces.pop_back();
+
     return location;
   }
+
+  // After merging, rebuild the vector (Thanks Claude)
+  void updateOpenSpaces() {
+    openSpaces.clear();
+    for (int row = 0; row < 4; row++) {
+      for (int col = 0; col < 4; col++) {
+        if (!gameBoard[row][col].isNumber()) {
+          openSpaces.emplace_back(row, col);
+        }
+      }
+    }
+  }
+
 
 
   static int generateRandomNumber(const int min, const int max) { // Generates a random integer given a min and a max
@@ -109,35 +134,29 @@ public:
       }
     }
 
-    for ( const Tile &tile: returnedRow ) {
-      std::cout << tile << std::endl;
-    }
-
     return returnedRow;
   }
 
   void merge(const char direction) {
-    switch (direction) {
-      case static_cast<char>(108): // l
+    bool boardChanged = false;
+    switch ( direction ) {
+      case 'l': // l
         this->mergeLeft();
-        this->addRandomTile();
         break;
-      case static_cast<char>(114): // r
+      case 'r': // r
         this->mergeRight();
-        this->addRandomTile();
         break;
-      case static_cast<char>(117): // u
+      case 'u': // u
         this->mergeUp();
-        this->addRandomTile();
         break;
-      case static_cast<char>(100): // d
+      case 'd': // d
         this->mergeDown();
-        this->addRandomTile();
         break;
-
-
-      default:;
+      default:
+        break;
     }
+    this->updateOpenSpaces();
+    this->addRandomTile();
   }
 
 private:
@@ -151,9 +170,9 @@ private:
     return sum > 0;
   }
 
-  static bool rowHasNumbers(const std::array<Tile, 4>& mergedArray) {
+  static bool rowHasNumbers(const std::array<Tile, 4> &mergedArray) {
     int sum = 0;
-    for (const Tile& tile : mergedArray) {
+    for ( const Tile &tile: mergedArray ) {
       sum += tile.getValue();
     }
     return sum > 0;
@@ -188,8 +207,8 @@ private:
         mergedArray[row] = gameBoard[row][col];
       }
 
-      if ( Board::rowHasNumbers(mergedArray)) { // Check if row is empty
-        // Check if the row has numbers, otherwise skip
+      if ( Board::rowHasNumbers(mergedArray) ) { // Check if row is empty
+
 
         // Reverse, merge, reverse back
         std::ranges::reverse(mergedArray);
@@ -211,12 +230,21 @@ private:
         mergedArray[row] = gameBoard[row][col];
       }
 
-      if ( Board::rowHasNumbers(mergedArray)) { // Check if row is empty
-
+      const auto staticArray = mergedArray; // Declare an array that will not change during merge
+      if ( Board::rowHasNumbers(mergedArray) ) { // Check if row is empty
         mergedArray = mergeTiles(mergedArray.data());
-        for ( int row = 0; row < 4; row++ ) {
-          gameBoard[row][col] = mergedArray[row];
-        }
+
+        // bool test = staticArray != mergedArray;
+        // std::cout << test << std::endl;
+
+        // if ( staticArray != mergedArray ) { // Check to see if the board has changed
+          for ( int row = 0; row < 4; row++ ) {
+            gameBoard[row][col] = mergedArray[row];
+          }
+          // return true;
+        // } else {
+        //   return false;
+        // }
       }
     }
   }
@@ -226,6 +254,16 @@ private:
     int startingValue = generateRandomNumber(2, 4);
     startingValue = startingValue == 3 ? 2 : startingValue; // Turns the 3 into a 2;
     gameBoard[location.first][location.second].setValue(startingValue);
+  }
+
+  std::vector<std::pair<int, int>> openSpaces;
+
+  void createOpenSpacesVector() {
+    for (int row = 0; row < 4; row++) {
+      for (int col = 0; col < 4; col++) {
+        openSpaces.emplace_back(row, col);
+      }
+    }
   }
 };
 

@@ -52,6 +52,11 @@ class Tile {
       this->value = 0;
     }
 
+  // Thanks Claude!
+  bool operator==(const Tile& other) const {
+      return this->getValue() == other.getValue();
+    }
+
   private:
     // Thanks Claude!
     std::unordered_map<int, sf::Color> tileBackgrounds = {
