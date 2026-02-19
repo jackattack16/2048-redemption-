@@ -3,6 +3,6 @@
 -- Found UDev: /usr/lib/x86_64-linux-gnu/libudev.so
 --    include: /usr/include
 -- Found SFML 3.0.0 in /usr/local/lib/cmake/SFML
--- Configuring done (0.2s)
+-- Configuring done (0.1s)
 -- Generating done (0.0s)
 -- Build files have been written to: /home/jackson-diekmann/CLionProjects/untitled/cmake-build-debug

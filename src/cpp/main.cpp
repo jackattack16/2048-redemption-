@@ -9,7 +9,7 @@ int main() {
   constexpr sf::ContextSettings settings;
   sf::Clock clock;
 
-  sf::RenderWindow window(sf::VideoMode({512, 512}), "My first window", sf::State::Windowed, settings);
+  sf::RenderWindow window(sf::VideoMode({512, 576}), "My first window", sf::State::Windowed, settings);
   window.setFramerateLimit(60);
   Game my_game{};
   my_game.start();
@@ -17,8 +17,9 @@ int main() {
 
   while (window.isOpen()) 
   {
-    window.clear(sf::Color{0x77, 0x6e, 0x65});
-    // sf::Time elapsed = clock.restart();
+    // window.clear(sf::Color{0xcf, 0xc2, 0xb6}); //#cfc2b6
+    window.clear();
+    sf::Time elapsed = clock.restart();
 
     while (const std::optional event = window.pollEvent()) {
       if (event->is<sf::Event::Closed>()) {
@@ -28,7 +29,10 @@ int main() {
     }
 
     my_game.pullInputs();
-    renderGame(my_game.theBoard, window, my_game.getFont());
+    // renderGame(my_game.theBoard, window, my_game.getFont());
+
+    my_game.renderGame(window, elapsed);
+    // renderGame(my_game.theBoard, window, my_game.getFont());
 
     window.display();
   }
