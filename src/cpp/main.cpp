@@ -14,7 +14,7 @@ int main() {
   Game my_game{};
   my_game.start();
 
-
+window.setKeyRepeatEnabled(false);
   while (window.isOpen()) 
   {
     // window.clear(sf::Color{0xcf, 0xc2, 0xb6}); //#cfc2b6
@@ -22,15 +22,17 @@ int main() {
     sf::Time elapsed = clock.restart();
 
     while (const std::optional event = window.pollEvent()) {
+
       if (event->is<sf::Event::Closed>()) {
         window.close();
       }
 
     }
 
-    my_game.pullInputs();
-    // renderGame(my_game.theBoard, window, my_game.getFont());
 
+    // renderGame(my_game.theBoard, window, my_game.getFont());
+    my_game.checkLose(elapsed);
+    my_game.pullInputs(window);
     my_game.renderGame(window, elapsed);
     // renderGame(my_game.theBoard, window, my_game.getFont());
 

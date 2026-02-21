@@ -20,7 +20,9 @@ public:
         row[col].reset();
       }
     }
+    this->createOpenSpacesVector();
     this->generateStartingBoard();
+    this->score = 0;
   }
 
   bool isPreformingAction{};
@@ -115,7 +117,7 @@ public:
   // float moveAmounts[10] = {-18.0f, -14.0f, -10.0f, -6.0f, -3.0f, -1.5f, 1.0f, 0.6f, 0.3f, 0.1f};
 
 
-  std::array<Tile, 4> mergeTiles(Tile inputRow[4]) {
+  std::array<Tile, 4> mergeTiles(Tile inputRow[4], bool editBoard) {
     std::vector<Tile> numbersFromRow; // Stores all the non-zero tiles from the inputRow
     for ( int x = 0; x < 4; x++ ) {
       if ( inputRow[x].isNumber() ) { // Check if the tile is a number, then adds it to the vector
@@ -130,7 +132,9 @@ public:
         Tile tempTile; // Create a temporary tile to push to the vector
         const int newValue = numbersFromRow.at(col).getValue() + numbersFromRow.at(col + 1).getValue();
         tempTile.setValue(newValue, true); // Calculate the new value
-        score += newValue;
+        if (editBoard) {
+          score += newValue;
+        }
         totalScore += newValue;
         mergedNumbers.push_back(tempTile);
         col++; // Skip the next tile
@@ -139,7 +143,7 @@ public:
       }
     }
 
-    if (totalScore > 0) {
+    if (totalScore > 0 && editBoard) {
       scoreNumberEffect newNumber{totalScore};
       scoreEffects.push_back(newNumber);
     }
@@ -161,22 +165,28 @@ public:
     bool boardChanged = false;
     switch ( direction ) {
       case 'l': // l
-        this->mergeLeft();
+        boardChanged = this->mergeLeft(true);
         break;
       case 'r': // r
-        this->mergeRight();
+        boardChanged = this->mergeRight(true);
         break;
       case 'u': // u
-        this->mergeUp();
+        boardChanged = this->mergeUp(true);
         break;
       case 'd': // d
-        this->mergeDown();
+        boardChanged = this->mergeDown(true);
         break;
       default:
         break;
     }
-    this->updateOpenSpaces();
-    this->addRandomTile();
+    if (boardChanged) {
+      this->updateOpenSpaces();
+      this->addRandomTile();
+    }
+  }
+
+  bool checkIfLost() {
+    return !(mergeLeft(false) || mergeRight(false) || mergeDown(false) || mergeUp(false));
   }
 
   int getScore() const {
@@ -202,28 +212,41 @@ private:
     return sum > 0;
   }
 
-  void mergeRight() {
+  bool mergeRight(bool editBoard) {
+    std::array<std::array<Tile, 4>, 4> gameBoardCopy = gameBoard;
     std::array<Tile, 4> mergedArray;
     for ( int row = 0; row < 4; row++ ) {
       if ( this->rowHasNumbers(row) ) { // Check if the row has numbers, otherwise skip
-        gameBoard[row] = mergeTiles(gameBoard[row].data());
+          gameBoard[row] = mergeTiles(gameBoard[row].data(), editBoard);
       }
     }
+    const bool returnValue = gameBoardCopy != gameBoard;
+    if (!editBoard) {
+      gameBoard = gameBoardCopy;
+    }
+    return returnValue;
   }
 
-  void mergeLeft() {
+  bool mergeLeft(bool editBoard) {
+    std::array<std::array<Tile, 4>, 4> gameBoardCopy = gameBoard;
     for ( int row = 0; row < 4; row++ ) {
       std::array<Tile, 4> reverseRow = gameBoard[row];
       if ( rowHasNumbers(row) ) { // Check if the row has numbers, otherwise skip
         std::ranges::reverse(reverseRow);
-        reverseRow = mergeTiles(reverseRow.data());
+        reverseRow = mergeTiles(reverseRow.data(), editBoard);
         std::ranges::reverse(reverseRow);
         gameBoard[row] = reverseRow;
       }
     }
+    const bool returnValue = gameBoardCopy != gameBoard;
+    if (!editBoard) {
+      gameBoard = gameBoardCopy;
+    }
+    return returnValue;
   }
 
-  void mergeUp() {
+  bool mergeUp(bool editBoard) {
+    std::array<std::array<Tile, 4>, 4> gameBoardCopy = gameBoard;
     std::array<Tile, 4> mergedArray;
     for ( int col = 0; col < 4; col++ ) {
       // Collect column
@@ -236,18 +259,24 @@ private:
 
         // Reverse, merge, reverse back
         std::ranges::reverse(mergedArray);
-        mergedArray = mergeTiles(mergedArray.data());
+        mergedArray = mergeTiles(mergedArray.data(), editBoard);
         std::ranges::reverse(mergedArray);
 
         // Put back in board
-        for ( int row = 0; row < 4; row++ ) {
-          gameBoard[row][col] = mergedArray[row];
-        }
+          for ( int row = 0; row < 4; row++ ) {
+            gameBoard[row][col] = mergedArray[row];
+          }
       }
     }
+    const bool returnValue = gameBoardCopy != gameBoard;
+    if (!editBoard) {
+      gameBoard = gameBoardCopy;
+    }
+    return returnValue;
   }
 
-  void mergeDown() {
+  bool mergeDown(bool editBoard) {
+    std::array<std::array<Tile, 4>, 4> gameBoardCopy = gameBoard;
     std::array<Tile, 4> mergedArray;
     for ( int col = 0; col < 4; col++ ) {
       for ( int row = 0; row < 4; row++ ) {
@@ -256,21 +285,20 @@ private:
 
       const auto staticArray = mergedArray; // Declare an array that will not change during merge
       if ( Board::rowHasNumbers(mergedArray) ) { // Check if row is empty
-        mergedArray = mergeTiles(mergedArray.data());
+        mergedArray = mergeTiles(mergedArray.data(), editBoard);
 
-        // bool test = staticArray != mergedArray;
-        // std::cout << test << std::endl;
+            for ( int row = 0; row < 4; row++ ) {
+              gameBoard[row][col] = mergedArray[row];
+            }
 
-        // if ( staticArray != mergedArray ) { // Check to see if the board has changed
-          for ( int row = 0; row < 4; row++ ) {
-            gameBoard[row][col] = mergedArray[row];
-          }
-          // return true;
-        // } else {
-        //   return false;
-        // }
+
       }
     }
+    const bool returnValue = gameBoardCopy != gameBoard;
+    if (!editBoard) {
+      gameBoard = gameBoardCopy;
+    }
+    return returnValue;
   }
 
   void addRandomTile() {
