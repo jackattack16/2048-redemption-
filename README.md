@@ -39,7 +39,7 @@ sudo apt update
 sudo apt install -y build-essential cmake libsfml-dev
 
 # Clone the repository
-git clone https://github.com/your‑username/untitled.git
+git clone https://github.com/jackattack16/2048-redemption-.git
 cd untitled
 ```
 
@@ -63,7 +63,7 @@ cd untitled
 brew install cmake sfml
 
 # Clone the repository
-git clone https://github.com/your‑username/untitled.git
+git clone https://github.com/jackattack16/2048-redemption-.git
 cd untitled
 ```
 
@@ -88,7 +88,7 @@ If you prefer a static build, you may need to rebuild SFML from source with `-DB
      Download the Windows static binaries from https://www.sfml-dev.org/download/sfml/3.0/ and extract them. Set the environment variable `SFML_ROOT` to the extracted folder before running CMake.
 4. **Clone the repository**
    ```powershell
-   git clone https://github.com/your‑username/untitled.git
+   git clone https://github.com/jackattack16/2048-redemption-.git
    cd untitled
    ```
 
