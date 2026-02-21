@@ -3,7 +3,7 @@ project(untitled)
 
 set(CMAKE_CXX_STANDARD 20)
 
-set(SFML_STATIC_LIBRARIES TRUE)
+set(SFML_STATIC_LIBRARIES FALSE)
 find_package(SFML 3.0 COMPONENTS Graphics REQUIRED)
 
 add_executable(untitled src/cpp/main.cpp
