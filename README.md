@@ -99,6 +99,7 @@ If you prefer a static build, you may need to rebuild SFML from source with `-DB
 From the repository root (the same directory that contains `CMakeLists.txt`):
 
 ```bash
+cd 2048-redemption-
 # Create a build directory (out‑of‑source build is recommended)
 cmake -B build -S .
 
@@ -106,6 +107,7 @@ cmake -B build -S .
 cmake --build build --config Release -- -j$(nproc)   # Linux/macOS
 # On Windows with Visual Studio generator:
 # cmake --build build --config Release
+
 ```
 
 The executable will be placed in `build/` (or `build/Release/` on Windows). The CMake script already copies `Blue Winter.ttf` into the binary directory, so the program can locate the font at runtime.
