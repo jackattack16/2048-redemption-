@@ -40,7 +40,7 @@ sudo apt install -y build-essential cmake libsfml-dev
 
 # Clone the repository
 git clone https://github.com/jackattack16/2048-redemption-.git
-cd untitled
+cd 2048-redemption-
 ```
 
 > **Note**: If your distribution provides an older SFML version, download the latest 3.0 binaries from the official site and point CMake to them:
@@ -64,7 +64,7 @@ brew install cmake sfml
 
 # Clone the repository
 git clone https://github.com/jackattack16/2048-redemption-.git
-cd untitled
+cd 2048-redemption-
 ```
 
 If you prefer a static build, you may need to rebuild SFML from source with `-DBUILD_SHARED_LIBS=OFF` and then set `SFML_ROOT` to the build directory.
@@ -89,7 +89,7 @@ If you prefer a static build, you may need to rebuild SFML from source with `-DB
 4. **Clone the repository**
    ```powershell
    git clone https://github.com/jackattack16/2048-redemption-.git
-   cd untitled
+   cd 2048-redemption-
    ```
 
 ---
@@ -99,7 +99,7 @@ If you prefer a static build, you may need to rebuild SFML from source with `-DB
 From the repository root (the same directory that contains `CMakeLists.txt`):
 
 ```bash
-cd 2048-redemption-
+
 # Create a build directory (out‑of‑source build is recommended)
 cmake -B build -S .
 
