@@ -117,7 +117,8 @@ The executable will be placed in `build/` (or `build/Release/` on Windows). The 
 ## Run the executable
 
 ```bash
-./build/untitled   # Linux/macOS
+cd build
+./untitled   # Linux/macOS
 # Windows (Release configuration)
 build\Release\untitled.exe
 ```
